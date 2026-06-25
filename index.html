@@ -4,153 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BULVARA DEX</title>
-    <!-- Подключаем Tailwind CSS для крутого дизайна -->
+    <!-- Подключаем Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Подключаем React и Babel, чтобы код работал прямо в браузере -->
+    <!-- Подключаем React для работы без сборщиков -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Подключаем иконки Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-[#05070A] text-white font-sans overflow-x-hidden selection:bg-[#FF007F] selection:text-white m-0 min-h-screen">
+<body class="bg-[#05070A] text-white font-sans overflow-x-hidden m-0 min-h-screen">
 
     <div id="root"></div>
 
-    <script type="text/babel">
-        // Достаем нужные иконки из глобального объекта Lucide
-        const { ArrowLeftRight, Droplets, Activity, ExternalLink } = lucide;
+    <script>
+        const e = React.createElement;
 
         function App() {
             const [activeTab, setActiveTab] = React.useState('swap');
             const BULV_TOKEN_URL = "https://app.ston.fi/swap?chartVisible=false&ft=TON&tt=EQAzI1vqCFeR1UGWT9ZQeanyN5Jg1wIBWtPKZ";
 
-            return (
-                <div class="min-h-screen flex flex-col relative">
-                    <!-- Задний неоновый фон (Glows) -->
-                    <div class="fixed top-[-15%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#00E5FF] opacity-10 blur-[120px] pointer-events-none"></div>
-                    <div class="fixed bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#FF007F] opacity-10 blur-[120px] pointer-events-none"></div>
+            // Вызываем обновление иконок при смене вкладки
+            React.useEffect(() => {
+                setTimeout(() => lucide.createIcons(), 50);
+            }, [activeTab]);
 
-                    <!-- Шапка -->
-                    <header class="relative z-10 flex items-center justify-between p-4 md:px-6 border-b border-white/[0.08] bg-black/30 backdrop-blur-xl">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="activity" class="w-7 h-7 text-[#00E5FF]"></i>
-                            <h1 class="text-xl md:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-[#FF007F]">
-                                BULVARA DEX
-                            </h1>
-                        </div>
-                        <div>
-                            <!-- Кнопка-заглушка под TonConnect, адаптированная под мобильный стиль -->
-                            <button class="bg-[#00E5FF]/20 hover:bg-[#00E5FF]/30 border border-[#00E5FF]/50 text-[#00E5FF] text-xs font-bold px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.15)] transition-all">
-                                Connect Wallet
-                            </button>
-                        </div>
-                    </header>
+            return e('div', { class: 'min-h-screen flex flex-col relative' },
+                // Задний неоновый фон
+                e('div', { class: 'fixed top-[-15%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#00E5FF] opacity-10 blur-[120px] pointer-events-none' }),
+                e('div', { class: 'fixed bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#FF007F] opacity-10 blur-[120px] pointer-events-none' }),
 
-                    <!-- Главный блок -->
-                    <main class="relative z-10 flex-1 flex flex-col items-center justify-center p-4 w-full max-w-lg mx-auto">
+                // Шапка
+                e('header', { class: 'relative z-10 flex items-center justify-between p-4 border-b border-white/[0.08] bg-black/30 backdrop-blur-xl' },
+                    e('div', { class: 'flex items-center gap-2' },
+                        e('i', { 'data-lucide': 'activity', class: 'w-7 h-7 text-[#00E5FF]' }),
+                        e('h1', { class: 'text-xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-[#FF007F]' }, 'BULVARA DEX')
+                    ),
+                    e('div', null,
+                        e('button', { class: 'bg-[#00E5FF]/20 border border-[#00E5FF]/50 text-[#00E5FF] text-xs font-bold px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.15)]' }, 'Connect Wallet')
+                    )
+                ),
+
+                // Главный блок
+                e('main', { class: 'relative z-10 flex-1 flex flex-col items-center justify-center p-4 w-full max-w-lg mx-auto' },
+                    e('div', { class: 'w-full bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-1.5 shadow-2xl overflow-hidden' },
                         
-                        <!-- Стеклянная карточка (Glassmorphism) -->
-                        <div class="w-full bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-1.5 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] overflow-hidden">
-                            
-                            <!-- Переключатель вкладок -->
-                            <div class="flex p-1 mb-2 bg-black/50 rounded-[1.25rem]">
-                                <button 
-                                    onClick={() => setActiveTab('swap')}
-                                    class={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                                        activeTab === 'swap' 
-                                            ? 'bg-[#00E5FF]/10 text-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.2)]' 
-                                            : 'text-gray-400 hover:text-white'
-                                    }`}
-                                >
-                                    <i data-lucide="arrow-left-right" class="w-4 h-4"></i> SWAP
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab('liquidity')}
-                                    class={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                                        activeTab === 'liquidity' 
-                                            ? 'bg-[#FF007F]/10 text-[#FF007F] shadow-[0_0_15px_rgba(255,0,127,0.2)]' 
-                                            : 'text-gray-400 hover:text-white'
-                                    }`}
-                                >
-                                    <i data-lucide="droplets" class="w-4 h-4"></i> LIQUIDITY
-                                </button>
-                            </div>
+                        // Переключатель вкладок
+                        e('div', { class: 'flex p-1 mb-2 bg-black/50 rounded-[1.25rem]' },
+                            e('button', {
+                                onClick: () => setActiveTab('swap'),
+                                class: `flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'swap' ? 'bg-[#00E5FF]/10 text-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.2)]' : 'text-gray-400'}`
+                            }, e('i', { 'data-lucide': 'arrow-left-right', class: 'w-4 h-4' }), ' SWAP'),
+                            e('button', {
+                                onClick: () => setActiveTab('liquidity'),
+                                class: `flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'liquidity' ? 'bg-[#FF007F]/10 text-[#FF007F] shadow-[0_0_15px_rgba(255,0,127,0.2)]' : 'text-gray-400'}`
+                            }, e('i', { 'data-lucide': 'droplets', class: 'w-4 h-4' }), ' LIQUIDITY')
+                        ),
 
-                            <!-- Окна вкладок -->
-                            <div class="bg-black/40 rounded-2xl p-1 border border-white/[0.04]">
-                                
-                                {activeTab === 'swap' && (
-                                    <div class="w-full rounded-xl overflow-hidden bg-black/20" style={{ height: '500px' }}>
-                                        <iframe 
-                                            src={BULV_TOKEN_URL}
-                                            title="STON.fi Swap"
-                                            class="w-full h-full border-none"
-                                            allow="clipboard-write; clipboard-read; camera"
-                                            scrolling="no"
-                                        />
-                                    </div>
-                                )}
-
-                                {activeTab === 'liquidity' && (
-                                    <div class="flex flex-col items-center p-6 space-y-6 text-center h-[500px] overflow-y-auto">
-                                        
-                                        <div class="mt-4 p-5 bg-gradient-to-b from-[#00E5FF]/20 to-transparent rounded-full border border-[#00E5FF]/20 shadow-[0_0_30px_rgba(0,229,255,0.2)]">
-                                            <i data-lucide="droplets" class="w-12 h-12 text-[#00E5FF]"></i>
-                                        </div>
-                                        
-                                        <div class="space-y-2">
-                                            <h2 class="text-2xl font-bold tracking-wide">Fuel the Ecosystem</h2>
-                                            <p class="text-sm text-gray-300 leading-relaxed">
-                                                Provide liquidity to the <span class="text-[#00E5FF] font-semibold">TON / $BULV</span> pool on STON.fi to earn trading fees, stabilize the token, and unlock exclusive community rewards.
-                                            </p>
-                                        </div>
-
-                                        <div class="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 text-left space-y-3">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-2.5 h-2.5 rounded-full bg-[#FF007F] shadow-[0_0_10px_rgba(255,0,127,0.8)]"></div>
-                                                <span class="text-xs font-medium text-gray-200">Earn 0.2% of all trades on your pool share</span>
-                                            </div>
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_10px_rgba(0,229,255,0.8)]"></div>
-                                                <span class="text-xs font-medium text-gray-200">Help deepen the $BULV market depth</span>
-                                            </div>
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-2.5 h-2.5 rounded-full bg-[#FF007F] shadow-[0_0_10px_rgba(255,0,127,0.8)]"></div>
-                                                <span class="text-xs font-medium text-gray-200">Qualify for future yield farming rounds</span>
-                                            </div>
-                                        </div>
-
-                                        <a 
-                                            href="https://app.ston.fi/pools?search=BULV" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            class="mt-auto w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#00E5FF] to-[#FF007F] rounded-xl font-bold text-white shadow-lg active:scale-[0.98] transition-all"
-                                        >
-                                            Provide Liquidity Now
-                                            <i data-lucide="external-link" class="w-4 h-4"></i>
-                                        </a>
-                                    </div>
-                                )}
-                                
-                            </div>
-                        </div>
-                    </main>
-                </div>
+                        // Окна контента
+                        e('div', { class: 'bg-black/40 rounded-2xl p-1 border border-white/[0.04]' },
+                            activeTab === 'swap' 
+                                ? e('div', { class: 'w-full rounded-xl overflow-hidden bg-black/20', style: { height: '500px' } },
+                                    e('iframe', {
+                                        src: BULV_TOKEN_URL,
+                                        title: 'STON.fi Swap',
+                                        class: 'w-full h-full border-none',
+                                        allow: 'clipboard-write; clipboard-read; camera',
+                                        scrolling: 'no'
+                                    })
+                                  )
+                                : e('div', { class: 'flex flex-col items-center p-6 space-y-6 text-center h-[500px] overflow-y-auto' },
+                                    e('div', { class: 'mt-4 p-5 bg-gradient-to-b from-[#00E5FF]/20 to-transparent rounded-full border border-[#00E5FF]/20' },
+                                        e('i', { 'data-lucide': 'droplets', class: 'w-12 h-12 text-[#00E5FF]' })
+                                    ),
+                                    e('div', { class: 'space-y-2' },
+                                        e('h2', { class: 'text-2xl font-bold' }, 'Fuel the Ecosystem'),
+                                        e('p', { class: 'text-sm text-gray-300' }, 'Provide liquidity to the TON / $BULV pool on STON.fi to earn trading fees.')
+                                    ),
+                                    e('div', { class: 'w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 text-left space-y-3' },
+                                        e('div', { class: 'flex items-center gap-3' }, e('div', { class: 'w-2 h-2 rounded-full bg-[#FF007F]' }), e('span', { class: 'text-xs text-gray-200' }, 'Earn 0.2% of all trades on your pool share')),
+                                        e('div', { class: 'flex items-center gap-3' }, e('div', { class: 'w-2 h-2 rounded-full bg-[#00E5FF]' }), e('span', { class: 'text-xs text-gray-200' }, 'Help deepen the $BULV market depth'))
+                                    ),
+                                    e('a', {
+                                        href: 'https://app.ston.fi/pools?search=BULV',
+                                        target: '_blank',
+                                        class: 'mt-auto w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#00E5FF] to-[#FF007F] rounded-xl font-bold text-white'
+                                    }, 'Provide Liquidity Now', e('i', { 'data-lucide': 'external-link', class: 'w-4 h-4' }))
+                                  )
+                        )
+                    )
+                )
             );
         }
 
-        // Рендерим приложение и инициализируем иконки после каждого переключения вкладок
+        // Рендеринг приложения
         const root = tragedies = ReactDOM.createRoot(document.getElementById('root'));
-        function renderApp() {
-            root.render(<App />);
-            setTimeout(() => lucide.createIcons(), 50);
-        }
-        renderApp();
-        
-        // Перехватываем обновления для перерисовки иконок
-        const originalSetState = React.useState;
-        window.addEventListener('click', () => setTimeout(() => lucide.createIcons(), 30));
+        root.render(e(App));
     </script>
 </body>
 </html>
